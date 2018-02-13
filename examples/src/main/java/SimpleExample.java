@@ -18,6 +18,7 @@
  * limitations under the License.
  */
 
+import org.aesh.readline.Prompt;
 import org.aesh.readline.Readline;
 import org.aesh.readline.ReadlineBuilder;
 import org.aesh.readline.tty.terminal.TerminalConnection;
@@ -36,6 +37,7 @@ import java.util.function.Consumer;
  * @author <a href="mailto:stale.pedersen@jboss.org">Ståle W. Pedersen</a>
  */
 public class SimpleExample implements Consumer<Connection> {
+    private Prompt prompt = new Prompt("[Aesh]:", Character.MIN_VALUE);
 
     public static void main(String... args) throws IOException {
         //we're setting up readline to read when connection receives any input
@@ -45,7 +47,7 @@ public class SimpleExample implements Consumer<Connection> {
 
     @Override
     public void accept(Connection connection) {
-        read(connection, ReadlineBuilder.builder().enableHistory(false).build(), "[aesh@rules]$ ");
+        read(connection, ReadlineBuilder.builder().enableHistory(false).build(), prompt);
         //setting our own signal handler for ctrl-c signals, lets close if we get any
         connection.setSignalHandler( signal -> {
             if(signal == Signal.INT)
@@ -56,7 +58,7 @@ public class SimpleExample implements Consumer<Connection> {
         connection.openBlocking();
     }
 
-    private void read(Connection connection, Readline readline, String prompt) {
+    private void read(Connection connection, Readline readline, Prompt prompt) {
         readline.readline(connection, prompt, input -> {
             //we specify a simple lambda consumer to read the input thats returned
             if(input != null && input.equals("exit")) {

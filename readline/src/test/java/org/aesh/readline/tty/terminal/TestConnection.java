@@ -315,12 +315,14 @@ public class TestConnection implements Connection {
     public void read(byte[] data) {
         decoder.write(data);
     }
+
     public void read(Key key) {
 
         eventDecoder.accept(key.getKeyValues());
     }
 
     public void read(String data) {
+        //
         eventDecoder.getInputHandler().accept(Parser.toCodePoints(data));
     }
 
